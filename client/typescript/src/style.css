@@ -1,0 +1,11 @@
+@import '@syncfusion/ej2-tailwind3-theme/styles/tailwind3.css';
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#spreadsheet {
+  width: 100%;
+}

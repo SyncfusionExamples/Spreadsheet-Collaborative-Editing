@@ -6,15 +6,15 @@ import { CollaborationClient } from '@syncfusion/ej2-collaborator';
 import { SpreadsheetEditorAdapter } from './spreadsheet-editor-adapter';
 import './style.css';
 
-const serviceUrl: string =
+const serviceUrl =
   ''YOUR_COLLABORATION_SERVER_URL'';
-const currentUser: string = 'John Adams';
+const currentUser = 'John Adams';
 
 Spreadsheet.Inject(CollaborativeEditingHandler);
 
-function getRoomName(): string {
-  const currentUrl: URL = new URL(window.location.href);
-  let roomName: string = (
+function getRoomName() {
+  const currentUrl = new URL(window.location.href);
+  let roomName = (
     currentUrl.searchParams.get('id') || ''
   ).trim();
 
@@ -31,20 +31,20 @@ function getRoomName(): string {
   return roomName;
 }
 
-let adapter: SpreadsheetEditorAdapter | null = null;
-let client: CollaborationClient | null = null;
-let initialized: boolean = false;
+let adapter = null;
+let collaborationClient = null;
+let initialized = false;
 
-const spreadsheet: Spreadsheet = new Spreadsheet({
+const spreadsheet = new Spreadsheet({
   height: '550px',
   enableCollaborativeEditing: true,
-  created: async (): Promise<void> => {
+  created: async () => {
     if (initialized) {
       return;
     }
 
     initialized = true;
-    const roomName: string = getRoomName();
+    const roomName = getRoomName();
     const spreadsheetAdapter = new SpreadsheetEditorAdapter(
       spreadsheet,
       serviceUrl,
@@ -52,9 +52,12 @@ const spreadsheet: Spreadsheet = new Spreadsheet({
     );
 
     try {
-      await spreadsheetAdapter.loadFromServer('Sample', roomName);
+      await spreadsheetAdapter.loadFromServer(
+        'Sample',
+        roomName
+      );
 
-      const collaborationClient = new CollaborationClient(
+      const client = new CollaborationClient(
         spreadsheetAdapter,
         {
           serviceUrl,
@@ -64,8 +67,8 @@ const spreadsheet: Spreadsheet = new Spreadsheet({
       );
 
       adapter = spreadsheetAdapter;
-      client = collaborationClient;
-      await collaborationClient.joinRoomAsync(roomName);
+      collaborationClient = client;
+      await client.joinRoomAsync(roomName);
 
       console.log(
         '[Collaborative Editing] Joined room',
@@ -79,11 +82,11 @@ const spreadsheet: Spreadsheet = new Spreadsheet({
       );
     }
   },
-  actionComplete: (args: unknown): void => {
+  actionComplete: (args) => {
     adapter?.sendActionToServer(args);
   }
 });
 
 spreadsheet.appendTo('#spreadsheet');
 
-void client;
+void collaborationClient;

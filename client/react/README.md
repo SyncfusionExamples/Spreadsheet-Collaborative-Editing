@@ -36,7 +36,7 @@ Open `src/App.tsx` and update the following URL when required:
 
 ```ts
 const serviceUrl: string =
-    'https://appservice-267100-e9c8cxaab6a2dfeu.centralindia-01.azurewebsites.net/';
+    ''YOUR_COLLABORATION_SERVER_URL'';
 ```
 
 The URL must point to the running ASP.NET Core Collaboration Server.
@@ -70,7 +70,7 @@ Copy the complete URL and open it in another browser window or tab. Clients usin
 The sample uses the following participant name:
 
 ```ts
-const currentUser: string = 'John';
+const currentUser: string = 'John Adams';
 ```
 
 ## How the sample works

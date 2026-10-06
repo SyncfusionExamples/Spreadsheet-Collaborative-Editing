@@ -8,8 +8,8 @@ import { CollaborationClient } from '@syncfusion/ej2-collaborator';
 import { SpreadsheetEditorAdapter } from './spreadsheet-editor-adapter';
 
 const serviceUrl: string =
-    'https://appservice-267100-e9c8cxaab6a2dfeu.centralindia-01.azurewebsites.net/';
-const currentUser: string = 'John';
+    ''YOUR_COLLABORATION_SERVER_URL'';
+const currentUser: string = 'John Adams';
 
 function getRoomName(): string {
     const currentUrl: URL = new URL(window.location.href);

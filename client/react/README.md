@@ -70,7 +70,7 @@ Copy the complete URL and open it in another browser window or tab. Clients usin
 The sample uses the following participant name:
 
 ```ts
-const currentUser: string = 'John';
+const currentUser: string = 'John Adams';
 ```
 
 ## How the sample works

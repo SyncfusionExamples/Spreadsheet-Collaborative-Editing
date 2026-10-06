@@ -12,7 +12,7 @@ import { SpreadsheetEditorAdapter } from './SpreadsheetEditorAdapter';
 
 const serviceUrl: string =
   ''YOUR_COLLABORATION_SERVER_URL'';
-const currentUser: string = 'John';
+const currentUser: string = 'John Adams';
 
 provide('spreadsheet', [CollaborativeEditingHandler]);
 

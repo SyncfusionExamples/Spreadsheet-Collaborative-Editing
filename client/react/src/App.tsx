@@ -11,7 +11,7 @@ import './App.css';
 const serviceUrl: string =
     ''YOUR_COLLABORATION_SERVER_URL'';
 
-const currentUser: string = 'John';
+const currentUser: string = 'John Adams';
 
 function getRoomName(): string {
     const currentUrl: URL = new URL(window.location.href);

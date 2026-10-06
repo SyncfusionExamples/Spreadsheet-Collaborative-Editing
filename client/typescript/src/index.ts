@@ -8,7 +8,7 @@ import './style.css';
 
 const serviceUrl: string =
   ''YOUR_COLLABORATION_SERVER_URL'';
-const currentUser: string = 'John';
+const currentUser: string = 'John Adams';
 
 Spreadsheet.Inject(CollaborativeEditingHandler);
 

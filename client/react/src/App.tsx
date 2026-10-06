@@ -9,7 +9,7 @@ import { SpreadsheetEditorAdapter } from './SpreadsheetEditorAdapter';
 import './App.css';
 
 const serviceUrl: string =
-    'https://appservice-267100-e9c8cxaab6a2dfeu.centralindia-01.azurewebsites.net/';
+    ''YOUR_COLLABORATION_SERVER_URL'';
 
 const currentUser: string = 'John';
 

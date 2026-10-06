@@ -11,7 +11,7 @@ import { CollaborationClient } from '@syncfusion/ej2-collaborator';
 import { SpreadsheetEditorAdapter } from './SpreadsheetEditorAdapter';
 
 const serviceUrl: string =
-  'https://appservice-267100-e9c8cxaab6a2dfeu.centralindia-01.azurewebsites.net/';
+  ''YOUR_COLLABORATION_SERVER_URL'';
 const currentUser: string = 'John';
 
 provide('spreadsheet', [CollaborativeEditingHandler]);

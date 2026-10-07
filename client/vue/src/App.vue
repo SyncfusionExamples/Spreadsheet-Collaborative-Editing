@@ -25,18 +25,22 @@ const userNames: string[] = [
     'Charles Edwards', 'Lucy Walker'
 ];
 
+// Injects the collaborative editing service into the Spreadsheet.
 provide('spreadsheet', [CollaborativeEditingHandler]);
 
 const spreadsheetRef = ref<InstanceType<typeof EjsSpreadsheet> | null>(null);
-const tooltipHostRef = ref<HTMLElement | null>(null);
 const shareButtonRef = ref<HTMLButtonElement | null>(null);
-const currentUser: string = userNames[Math.floor(Math.random() * userNames.length)] ?? 'John Sullivan';
+const currentUser: string =
+    userNames[Math.floor(Math.random() * userNames.length)] ?? 'John Sullivan';
 
 let adapter: SpreadsheetEditorAdapter | null = null;
 let collaborationClient: CollaborationClient | null = null;
 let shareButton: Button | null = null;
 let copyButton: Button | null = null;
 let shareTooltip: Tooltip | null = null;
+let tooltipContent: HTMLElement | null = null;
+let collaborationUrlInput: HTMLInputElement | null = null;
+let copyButtonElement: HTMLButtonElement | null = null;
 let copyResetTimer: number | null = null;
 let initialized: boolean = false;
 
@@ -77,6 +81,21 @@ function closeShareTooltip(): void {
     }
 }
 
+/** Opens the collaboration Share tooltip. */
+function openShareTooltip(): void {
+    if (!shareButtonRef.value || !shareTooltip) {
+        return;
+    }
+
+    resetCopyButton();
+
+    if (collaborationUrlInput) {
+        collaborationUrlInput.value = window.location.href;
+    }
+
+    shareTooltip.open(shareButtonRef.value);
+}
+
 /** Copies the collaboration URL and displays the copied state temporarily. */
 async function copyUrl(): Promise<void> {
     try {
@@ -97,7 +116,7 @@ async function copyUrl(): Promise<void> {
     }
 }
 
-/** Creates the share tooltip content and initializes the Copy URL button. */
+/** Creates the content displayed in the Share tooltip. */
 function createShareTooltipContent(): HTMLElement {
     const content: HTMLDivElement = document.createElement('div');
     const label: HTMLLabelElement = document.createElement('label');
@@ -116,6 +135,7 @@ function createShareTooltipContent(): HTMLElement {
     input.value = window.location.href;
     input.readOnly = true;
     input.setAttribute('aria-label', 'Collaboration URL');
+    collaborationUrlInput = input;
     buttonElement.type = 'button';
 
     row.append(input, buttonElement);
@@ -127,11 +147,12 @@ function createShareTooltipContent(): HTMLElement {
     });
     copyButton.appendTo(buttonElement);
     buttonElement.addEventListener('click', copyUrl);
+    copyButtonElement = buttonElement;
 
     return content;
 }
 
-/** Closes the share tooltip when a pointer action occurs outside it. */
+/** Closes the Share tooltip when a pointer action occurs outside it. */
 function closeTooltipOnOutsideClick(event: MouseEvent): void {
     const target: Node = event.target as Node;
     const tooltipElement: Element | null = document.querySelector(
@@ -145,8 +166,14 @@ function closeTooltipOnOutsideClick(event: MouseEvent): void {
     closeShareTooltip();
 }
 
-/** Closes the share tooltip when the page or a parent element is scrolled. */
-function closeTooltipOnScroll(): void {
+/** Closes the Share tooltip when the page is scrolled. */
+function closeTooltipOnScroll(event: Event): void {
+    const target: EventTarget | null = event.target;
+
+    if (target instanceof Element && target.closest('.e-spreadsheet')) {
+        return;
+    }
+
     closeShareTooltip();
 }
 
@@ -192,32 +219,35 @@ function onActionComplete(args: unknown): void {
 }
 
 onMounted(() => {
-    if (shareButtonRef.value) {
-        shareButton = new Button({
-            content: 'Share',
-            cssClass: 'e-primary share-button'
-        });
-        shareButton.appendTo(shareButtonRef.value);
+    if (!shareButtonRef.value) {
+        return;
     }
 
-    if (tooltipHostRef.value) {
-        shareTooltip = new Tooltip({
-            content: createShareTooltipContent,
-            opensOn: 'Click',
-            position: 'BottomRight',
-            cssClass: 'collaboration-share-tooltip',
-            target: '#share-collaboration-url'
-        });
-        shareTooltip.appendTo(tooltipHostRef.value);
-    }
+    shareButton = new Button({
+        content: 'Share',
+        cssClass: 'e-primary share-button'
+    });
+    shareButton.appendTo(shareButtonRef.value);
 
+    tooltipContent = createShareTooltipContent();
+    shareTooltip = new Tooltip({
+        content: tooltipContent,
+        opensOn: 'Custom',
+        position: 'BottomRight',
+        cssClass: 'collaboration-share-tooltip'
+    });
+    shareTooltip.appendTo(shareButtonRef.value);
+
+    shareButtonRef.value.addEventListener('click', openShareTooltip);
     document.addEventListener('mousedown', closeTooltipOnOutsideClick);
     window.addEventListener('scroll', closeTooltipOnScroll, true);
 });
 
 onBeforeUnmount(() => {
+    shareButtonRef.value?.removeEventListener('click', openShareTooltip);
     document.removeEventListener('mousedown', closeTooltipOnOutsideClick);
     window.removeEventListener('scroll', closeTooltipOnScroll, true);
+    copyButtonElement?.removeEventListener('click', copyUrl);
 
     if (copyResetTimer !== null) {
         window.clearTimeout(copyResetTimer);
@@ -226,6 +256,9 @@ onBeforeUnmount(() => {
     shareTooltip?.destroy();
     shareButton?.destroy();
     copyButton?.destroy();
+    tooltipContent = null;
+    collaborationUrlInput = null;
+    copyButtonElement = null;
     collaborationClient = null;
     adapter = null;
     initialized = false;
@@ -240,7 +273,7 @@ onBeforeUnmount(() => {
                 The link contains a unique session ID that connects all participants
                 to the same workbook.
             </div>
-            <div ref="tooltipHostRef" class="share-tooltip-host">
+            <div class="share-tooltip-host">
                 <button
                     id="share-collaboration-url"
                     ref="shareButtonRef"
@@ -252,6 +285,7 @@ onBeforeUnmount(() => {
             <!-- Enables real-time collaborative editing in the Spreadsheet. -->
             <ejs-spreadsheet
                 ref="spreadsheetRef"
+                width="100%"
                 height="550px"
                 :enableCollaborativeEditing="true"
                 :created="onCreated"

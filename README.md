@@ -81,9 +81,13 @@ Users who connect to the same server and open a URL containing the same `id` que
 
 ## Documentation
 
-- [Collaborative editing overview](https://help.syncfusion.com/document-processing/excel/spreadsheet/react/collaborative-editing/overview)
+- [Collaborative Editing Overview](https://help.syncfusion.com/document-processing/excel/spreadsheet/react/collaborative-editing/overview)
 - [Collaboration Client](https://help.syncfusion.com/document-processing/collaborator/collaboration-client)
 - [Collaboration Server](https://help.syncfusion.com/document-processing/collaborator/collaboration-server)
+
+## Live demo
+
+Explore the [Collaborative Editing Live Demo](https://ej2.syncfusion.com/products/react/spreadsheet/collaborative-editing).
 
 ## License
 

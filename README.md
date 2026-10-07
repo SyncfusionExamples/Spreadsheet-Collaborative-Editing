@@ -79,6 +79,10 @@ Users who connect to the same server and open a URL containing the same `id` que
 5. Open the copied URL in another browser tab or window.
 6. Edit the workbook and verify that supported changes are synchronized between both clients.
 
+## Live demo
+
+Explore the [Spreadsheet Collaborative Editing live demo](https://ej2.syncfusion.com/products/react/spreadsheet/collaborative-editing).
+
 ## Documentation
 
 - [Collaborative editing overview](https://help.syncfusion.com/document-processing/excel/spreadsheet/react/collaborative-editing/overview)
